@@ -37,10 +37,10 @@
 <section id="dashboard" class="admin-section">
   <div class="page-head"><div><h2 class="title">Dashboard Operasional</h2><p>Pantau kesiapan jamaah dan kondisi rombongan dari satu tempat.</p></div><span class="badge green">● Sistem Aktif</span></div>
   <div class="grid g4">
-    <div class="card stat"><small>Total Jamaah</small><div class="value">120</div></div>
+    <div class="card stat"><small>Total Jamaah</small><div class="value" id="statTotalJamaah">120</div></div>
     <div class="card stat"><small>Sudah Kumpul</small><div class="value" style="color:var(--green)">109</div></div>
     <div class="card stat"><small>Belum Kumpul</small><div class="value" style="color:var(--amber)">11</div></div>
-    <div class="card stat"><small>SOS Aktif</small><div class="value" style="color:var(--red)">1</div></div>
+    <div class="card stat"><small>SOS Aktif</small><div class="value" id="statSosAktif" style="color:var(--red)">1</div></div>
   </div>
   <div class="grid g3" style="margin-top:16px">
     <div class="card panel"><h3>Live Location</h3><p class="muted">112 jamaah aktif berbagi lokasi.</p><div class="list">
@@ -336,21 +336,104 @@
 
 <div id="incidentModal" class="modal-bg hidden"><div class="card modal"><div style="display:flex;justify-content:space-between;align-items:center"><h3 class="title" style="margin:0">Buat Incident Report</h3><button class="btn btn-soft" onclick="closeIncident()">✕</button></div><textarea id="incidentText" placeholder="Tuliskan kronologi singkat..."></textarea><button class="btn btn-danger" style="width:100%;margin-top:10px" onclick="saveIncident()">Simpan Laporan</button></div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/js/supabase-config.js"></script>
+<script src="/assets/js/supabase-app.js"></script>
 <script src="/assets/js/app.js"></script>
 <script>
-const s=session("admin"); if(s)document.getElementById("adminName").textContent="Login sebagai "+s.name;
-const places={
- "Ahmad Fauzi":[24.4672,39.6111],
- "Budi Santoso":[24.4690,39.6068],
- "Hasan Ali":[24.4649,39.6085]
+const demoPlaces={
+  "Ahmad Fauzi":[24.4672,39.6111],
+  "Budi Santoso":[24.4690,39.6068],
+  "Hasan Ali":[24.4649,39.6085]
 };
-window.addEventListener("load",()=>{
+
+async function refreshCommandCenterFromSupabase(){
+  try{
+    const jamaah=await mtAdminLoadJamaah();
+    const sos=await mtLoadActiveSOS();
+    const latest=await mtLoadLatestLocations();
+
+    const totalEl=document.getElementById("statTotalJamaah");
+    const sosEl=document.getElementById("statSosAktif");
+
+    if(totalEl) totalEl.textContent=jamaah.length;
+    if(sosEl) sosEl.textContent=sos.length;
+
+    if(window.adminMap && latest?.length){
+      if(window.liveMarkers){
+        Object.values(window.liveMarkers).forEach(marker=>{
+          window.adminMap.removeLayer(marker);
+        });
+      }
+
+      window.liveMarkers={};
+
+      latest.forEach(row=>{
+        if(row.latitude==null || row.longitude==null) return;
+
+        const marker=L.marker([
+          Number(row.latitude),
+          Number(row.longitude)
+        ])
+        .addTo(window.adminMap)
+        .bindPopup(
+          `<b>${row.full_name||"Jamaah"}</b><br>
+          Update: ${new Date(row.created_at).toLocaleString("id-ID")}`
+        );
+
+        window.liveMarkers[row.full_name||row.jamaah_id]=marker;
+      });
+    }
+  }catch(err){
+    console.error("Refresh Command Center:",err);
+  }
+}
+
+function focusMarker(name){
+  const marker=(window.liveMarkers && window.liveMarkers[name])
+    || (window.markers && window.markers[name]);
+
+  showSection("tracking",document.querySelectorAll(".nav button")[3]);
+
+  setTimeout(()=>{
+    if(!marker || !window.adminMap) return;
+    window.adminMap.setView(marker.getLatLng(),17);
+    marker.openPopup();
+    window.adminMap.invalidateSize();
+  },150);
+}
+
+(async()=>{
+  const auth=await requireAdminPage();
+  if(!auth) return;
+
+  const name=auth.profile?.full_name || "Admin";
+  const nameEl=document.getElementById("adminName");
+  if(nameEl) nameEl.textContent="Login sebagai "+name;
+
   window.adminMap=L.map("adminMap").setView([24.4672,39.6095],15);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(adminMap);
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {maxZoom:19,attribution:"&copy; OpenStreetMap"}
+  ).addTo(window.adminMap);
+
   window.markers={};
-  Object.entries(places).forEach(([n,ll])=>{markers[n]=L.marker(ll).addTo(adminMap).bindPopup("<b>"+n+"</b><br>Lokasi demo")});
-  L.circle([24.4690,39.6068],{radius:1000,weight:1,fillOpacity:.04}).addTo(adminMap).bindPopup("Safe Zone");
-});
-function focusMarker(n){showSection("tracking",document.querySelectorAll(".nav button")[3]);setTimeout(()=>{const m=markers[n];adminMap.setView(m.getLatLng(),17);m.openPopup();adminMap.invalidateSize()},150)}
+
+  Object.entries(demoPlaces).forEach(([n,ll])=>{
+    window.markers[n]=L.marker(ll)
+      .addTo(window.adminMap)
+      .bindPopup(`<b>${n}</b><br>Lokasi contoh`);
+  });
+
+  L.circle([24.4690,39.6068],{
+    radius:1000,
+    weight:1,
+    fillOpacity:.04
+  }).addTo(window.adminMap).bindPopup("Safe Zone");
+
+  await refreshCommandCenterFromSupabase();
+  mtSubscribeCommandCenter(()=>refreshCommandCenterFromSupabase());
+})();
 </script>
 </body></html>
