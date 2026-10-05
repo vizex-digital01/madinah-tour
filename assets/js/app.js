@@ -79,3 +79,121 @@ function myLocation(){
     {enableHighAccuracy:true,timeout:10000}
   );
 }
+
+
+const defaultAdminSettings = {
+  travelName: "Madinah Tour",
+  portalName: "Madinah Journey",
+  whatsapp: "0811-8802-1519",
+  address: "Jl. Akses Marunda No.35B, Cilincing, Jakarta Utara",
+  safeRadius: 1000,
+  locationInterval: "60",
+  geofenceAlert: true,
+  locationHistory: true,
+  tourLeader: "Tour Leader Madinah Tour",
+  tourLeaderPhone: "",
+  emergencyPhone: "0811-8802-1519",
+  sosEnabled: true,
+  notifySos: true,
+  notifyAttendance: true,
+  notifyDocuments: true,
+  defaultBroadcast: "Assalamualaikum. Mohon seluruh jamaah memperhatikan informasi terbaru dari tim Madinah Tour.",
+  programName: "Umroh 9 Hari",
+  departureDate: "2026-11-02",
+  meetingPoint: "Bandara Soekarno-Hatta",
+  totalJamaah: 120,
+  autoLogout: true,
+  autoLogoutMinutes: "30",
+  emergencyConfirm: true
+};
+
+function getAdminSettings(){
+  try{
+    return {...defaultAdminSettings, ...JSON.parse(localStorage.getItem("mt_admin_settings") || "{}")};
+  }catch(e){
+    return {...defaultAdminSettings};
+  }
+}
+
+function setVal(id,val){
+  const el=document.getElementById(id);
+  if(!el) return;
+  if(el.type==="checkbox") el.checked=!!val;
+  else el.value=val ?? "";
+}
+
+function loadAdminSettings(){
+  const s=getAdminSettings();
+  setVal("setTravelName",s.travelName);
+  setVal("setPortalName",s.portalName);
+  setVal("setWhatsapp",s.whatsapp);
+  setVal("setAddress",s.address);
+  setVal("setSafeRadius",s.safeRadius);
+  setVal("setLocationInterval",s.locationInterval);
+  setVal("setGeofenceAlert",s.geofenceAlert);
+  setVal("setLocationHistory",s.locationHistory);
+  setVal("setTourLeader",s.tourLeader);
+  setVal("setTourLeaderPhone",s.tourLeaderPhone);
+  setVal("setEmergencyPhone",s.emergencyPhone);
+  setVal("setSosEnabled",s.sosEnabled);
+  setVal("setNotifySos",s.notifySos);
+  setVal("setNotifyAttendance",s.notifyAttendance);
+  setVal("setNotifyDocuments",s.notifyDocuments);
+  setVal("setDefaultBroadcast",s.defaultBroadcast);
+  setVal("setProgramName",s.programName);
+  setVal("setDepartureDate",s.departureDate);
+  setVal("setMeetingPoint",s.meetingPoint);
+  setVal("setTotalJamaah",s.totalJamaah);
+  setVal("setAutoLogout",s.autoLogout);
+  setVal("setAutoLogoutMinutes",s.autoLogoutMinutes);
+  setVal("setEmergencyConfirm",s.emergencyConfirm);
+}
+
+function readCheckbox(id){
+  const el=document.getElementById(id);
+  return !!(el && el.checked);
+}
+function readValue(id){
+  const el=document.getElementById(id);
+  return el ? el.value : "";
+}
+
+function saveAdminSettings(){
+  const data={
+    travelName:readValue("setTravelName"),
+    portalName:readValue("setPortalName"),
+    whatsapp:readValue("setWhatsapp"),
+    address:readValue("setAddress"),
+    safeRadius:Number(readValue("setSafeRadius")||1000),
+    locationInterval:readValue("setLocationInterval"),
+    geofenceAlert:readCheckbox("setGeofenceAlert"),
+    locationHistory:readCheckbox("setLocationHistory"),
+    tourLeader:readValue("setTourLeader"),
+    tourLeaderPhone:readValue("setTourLeaderPhone"),
+    emergencyPhone:readValue("setEmergencyPhone"),
+    sosEnabled:readCheckbox("setSosEnabled"),
+    notifySos:readCheckbox("setNotifySos"),
+    notifyAttendance:readCheckbox("setNotifyAttendance"),
+    notifyDocuments:readCheckbox("setNotifyDocuments"),
+    defaultBroadcast:readValue("setDefaultBroadcast"),
+    programName:readValue("setProgramName"),
+    departureDate:readValue("setDepartureDate"),
+    meetingPoint:readValue("setMeetingPoint"),
+    totalJamaah:Number(readValue("setTotalJamaah")||0),
+    autoLogout:readCheckbox("setAutoLogout"),
+    autoLogoutMinutes:readValue("setAutoLogoutMinutes"),
+    emergencyConfirm:readCheckbox("setEmergencyConfirm")
+  };
+
+  localStorage.setItem("mt_admin_settings",JSON.stringify(data));
+
+  const toast=document.getElementById("settingsSaved");
+  if(toast){
+    toast.classList.remove("hidden");
+    setTimeout(()=>toast.classList.add("hidden"),2200);
+  }
+
+  // Update quick broadcast placeholder with saved default message
+  const quick=document.getElementById("quickBroadcast");
+  if(quick && data.defaultBroadcast) quick.placeholder=data.defaultBroadcast;
+}
