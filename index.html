@@ -1,78 +1,38 @@
 <!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#062b59">
-  <title>Madinah Journey | Portal Jamaah</title>
-  <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
-  <main class="auth-shell">
-    <section class="auth-brand">
-      <div class="brand-chip">MADINAH JOURNEY • MADINAH TOUR</div>
-
-      <div class="brand-copy">
-        <h1>Perjalanan Umroh lebih tenang, terarah, dan terpantau.</h1>
-        <p>
-          Satu portal untuk persiapan dokumen, manasik, itinerary,
-          informasi keberangkatan, hingga bantuan jamaah selama di Tanah Suci.
-        </p>
-
-        <div class="brand-points">
-          <div class="point">✓ Persiapan jamaah</div>
-          <div class="point">✓ Informasi perjalanan</div>
-          <div class="point">✓ Bantuan & keselamatan</div>
-        </div>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073564">
+<title>Madinah Journey | Portal Jamaah</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+</head><body>
+<main class="auth-shell">
+  <section class="auth-brand">
+    <div class="brand-chip">MADINAH JOURNEY • MADINAH TOUR</div>
+    <div class="brand-copy">
+      <h1>Perjalanan Umroh lebih tenang dan terpantau.</h1>
+      <p>Satu portal untuk persiapan jamaah, dokumen, manasik, itinerary, lokasi, dan bantuan selama perjalanan di Tanah Suci.</p>
+      <div class="brand-points">
+        <span class="brand-point">✓ Persiapan Jamaah</span>
+        <span class="brand-point">✓ Live Location</span>
+        <span class="brand-point">✓ SOS & Bantuan</span>
       </div>
-
-      <div style="position:relative;z-index:2;color:#bfdbfe;font-size:13px">
-        MadinahTour.com — Travel Haji dan Umroh
-      </div>
-    </section>
-
-    <section class="auth-panel">
-      <div class="login-card">
-        <div class="logo-wrap">
-          <img src="/assets/img/madinah-tour-logo.jpeg" alt="Madinah Tour">
-        </div>
-
-        <h2>Masuk ke Portal</h2>
-        <p class="sub">Silakan masuk menggunakan akun jamaah atau akun admin.</p>
-
-        <form onsubmit="loginDemo(event)">
-          <div class="form-row">
-            <label for="login">Email / No. WhatsApp / Username</label>
-            <input class="input" id="login" autocomplete="username" placeholder="Masukkan akun">
-          </div>
-
-          <div class="form-row">
-            <label for="password">Password / PIN</label>
-            <div class="password-wrap">
-              <input class="input" id="password" type="password" autocomplete="current-password" placeholder="Masukkan password">
-              <button id="showPass" class="show-pass" type="button" onclick="togglePassword()">Lihat</button>
-            </div>
-          </div>
-
-          <div class="helper">
-            <span>Akses khusus jamaah & tim Madinah Tour</span>
-          </div>
-
-          <button class="login-btn" type="submit">Masuk ke Dashboard</button>
-          <div class="status" id="status"></div>
-        </form>
-
-        <div class="demo-box">
-          <b>Akun pengujian</b><br>
-          Admin: <b>admin</b> / <b>admin123</b><br>
-          Jamaah: <b>jamaah</b> / <b>123456</b>
-        </div>
-
-        <div class="footer">© 2026 Madinah Tour • Portal Jamaah</div>
-      </div>
-    </section>
-  </main>
-
-  <script src="/assets/js/app.js"></script>
-</body>
-</html>
+    </div>
+    <div style="position:relative;z-index:2;color:#bfdbfe;font-size:13px">MadinahTour.com — Travel Haji dan Umroh</div>
+  </section>
+  <section class="auth-panel">
+    <div class="card login-card">
+      <img class="login-logo" src="/assets/img/madinah-tour-logo.jpeg" alt="Madinah Tour">
+      <h2 class="title">Masuk ke Portal</h2>
+      <p class="muted">Gunakan akun jamaah atau akun admin Madinah Tour.</p>
+      <form onsubmit="loginDemo(event)">
+        <div class="field"><label>Email / No. WhatsApp / Username</label><input class="input" id="login" placeholder="Masukkan akun" autocomplete="username"></div>
+        <div class="field"><label>Password / PIN</label><div class="pass-wrap"><input class="input" id="password" type="password" placeholder="Masukkan password"><button id="showPass" class="show-pass" type="button" onclick="togglePassword()">Lihat</button></div></div>
+        <button class="btn btn-primary login-btn" type="submit">Masuk ke Dashboard</button>
+        <div id="status" class="status"></div>
+      </form>
+      <div class="demo-box"><b>Akun pengujian</b><br>Admin: <b>admin</b> / <b>admin123</b><br>Jamaah: <b>jamaah</b> / <b>123456</b></div>
+    </div>
+  </section>
+</main>
+<script src="/assets/js/app.js"></script>
+</body></html>
