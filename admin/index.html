@@ -1,1 +1,150 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Madinah Journey</title><link rel="stylesheet" href="/assets/css/style.css"></head><body><aside class="sidebar"><img src="/assets/img/madinah-tour-logo.jpeg"><nav><a class="active" href="/admin/">Dashboard</a><a href="#">Data Jamaah</a><a href="#">Dokumen</a><a href="#">Live Location</a><a href="#">Absensi</a><a href="#">Bus & Hotel</a><a href="#">Incident</a><a href="#">Broadcast</a></nav></aside><div class="admin-main"><header class="admin-head"><div><b>Command Center Madinah Tour</b><div class="muted" style="font-size:12px" id="adminName">Admin</div></div><button class="btn btn-soft" onclick="logout()">Keluar</button></header><main class="admin-content"><div class="section-title" style="font-size:28px">Dashboard Operasional</div><p class="muted">Pantau kesiapan jamaah dan kondisi rombongan.</p><section class="grid grid-4" style="margin-top:18px"><div class="card stat"><small>Total Jamaah</small><div class="num">120</div></div><div class="card stat"><small>Sudah Kumpul</small><div class="num" style="color:#16a34a">109</div></div><div class="card stat"><small>Belum Kumpul</small><div class="num" style="color:#d97706">11</div></div><div class="card stat"><small>SOS Aktif</small><div class="num" style="color:#dc2626">1</div></div></section><section class="grid grid-3" style="margin-top:18px"><div class="card" style="padding:20px"><div class="section-title">Live Location</div><p class="muted">112 jamaah aktif berbagi lokasi.</p><div class="list"><div class="list-item"><span>Ahmad Fauzi</span><span class="badge green">Online</span></div><div class="list-item"><span>Budi Santoso</span><span class="badge yellow">12 menit</span></div><div class="list-item"><span>Hasan Ali</span><span class="badge red">SOS</span></div></div></div><div class="card" style="padding:20px"><div class="section-title">Absensi & Bus</div><div class="list"><div class="list-item"><span>Meeting Point</span><b>109/120</b></div><div class="list-item"><span>Naik Bus</span><b>104/120</b></div><div class="list-item"><span>Check-in Hotel</span><b>116/120</b></div></div></div><div class="card" style="padding:20px"><div class="section-title">Perlu Ditindak</div><div class="list"><div class="list-item"><span>Paspor belum lengkap</span><b>4</b></div><div class="list-item"><span>Vaksin belum lengkap</span><b>9</b></div><div class="list-item"><span>Visa proses</span><b>21</b></div></div></div></section></main></div><script src="/assets/js/app.js"></script><script>const s=requireRole('admin');if(s)document.getElementById('adminName').textContent='Login sebagai '+s.name;</script></body></html>
+<!doctype html>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073564">
+<title>Command Center | Madinah Tour</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head><body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <img class="side-logo" src="/assets/img/madinah-tour-logo.jpeg" alt="Madinah Tour">
+  <div class="side-caption">COMMAND CENTER</div>
+  <nav class="nav">
+    <button class="active" onclick="showSection('dashboard',this)">⌂ Dashboard</button>
+    <button onclick="showSection('jamaahData',this)">👥 Data Jamaah</button>
+    <button onclick="showSection('documents',this)">▤ Dokumen</button>
+    <button onclick="showSection('tracking',this)">⌖ Live Location</button>
+    <button onclick="showSection('attendance',this)">✓ Absensi</button>
+    <button onclick="showSection('busHotel',this)">▣ Bus & Hotel</button>
+    <button onclick="showSection('incidents',this)">⚠ Incident</button>
+    <button onclick="showSection('broadcast',this)">◉ Broadcast</button>
+  </nav>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+    <div><h1>Command Center Madinah Tour</h1><small id="adminName">Admin</small></div>
+  </div>
+  <button class="btn btn-soft" onclick="logout()">Keluar</button>
+</header>
+
+<main class="content">
+<section id="dashboard" class="admin-section">
+  <div class="page-head"><div><h2 class="title">Dashboard Operasional</h2><p>Pantau kesiapan jamaah dan kondisi rombongan dari satu tempat.</p></div><span class="badge green">● Sistem Aktif</span></div>
+  <div class="grid g4">
+    <div class="card stat"><small>Total Jamaah</small><div class="value">120</div></div>
+    <div class="card stat"><small>Sudah Kumpul</small><div class="value" style="color:var(--green)">109</div></div>
+    <div class="card stat"><small>Belum Kumpul</small><div class="value" style="color:var(--amber)">11</div></div>
+    <div class="card stat"><small>SOS Aktif</small><div class="value" style="color:var(--red)">1</div></div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card panel"><h3>Live Location</h3><p class="muted">112 jamaah aktif berbagi lokasi.</p><div class="list">
+      <div class="row"><span>Ahmad Fauzi</span><span class="badge green">Online</span></div>
+      <div class="row"><span>Budi Santoso</span><span class="badge amber">12 menit</span></div>
+      <div class="row"><span>Hasan Ali</span><span class="badge red">SOS</span></div>
+    </div></div>
+    <div class="card panel"><h3>Absensi & Pergerakan</h3><p class="muted">Status operasional terkini.</p><div class="list">
+      <div class="row"><span>Meeting Point</span><b>109/120</b></div>
+      <div class="row"><span>Naik Bus</span><b>104/120</b></div>
+      <div class="row"><span>Check-in Hotel</span><b>116/120</b></div>
+    </div></div>
+    <div class="card panel"><h3>Perlu Ditindak</h3><p class="muted">Prioritas tim hari ini.</p><div class="list">
+      <div class="row"><span>Paspor belum lengkap</span><b>4</b></div>
+      <div class="row"><span>Vaksin belum lengkap</span><b>9</b></div>
+      <div class="row"><span>Visa masih proses</span><b>21</b></div>
+    </div></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card panel"><h3>Jamaah Perlu Ditindak</h3><div class="list" style="margin-top:14px">
+      <div class="alertbox"><b>Hasan Ali — SOS aktif</b><div class="muted" style="font-size:12px;margin-top:4px">Sekitar Masjid Nabawi • 2 menit lalu</div><button class="btn btn-danger" style="margin-top:10px" onclick="showSection('tracking',document.querySelectorAll('.nav button')[3])">Lihat Lokasi</button></div>
+      <div class="row"><div><b>Budi Santoso</b><div class="muted" style="font-size:12px">Belum check-in meeting point</div></div><span class="badge amber">Cari</span></div>
+    </div></div>
+    <div class="card panel"><h3>Broadcast Cepat</h3><p class="muted">Kirim pengumuman ke jamaah.</p><textarea id="quickBroadcast" style="width:100%;min-height:112px;border:1px solid var(--border);border-radius:14px;padding:12px" placeholder="Contoh: Mohon seluruh jamaah berkumpul di lobby pukul 07.00."></textarea><button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="alert('Broadcast demo siap dikirim.')">Kirim Pengumuman</button></div>
+  </div>
+</section>
+
+<section id="jamaahData" class="admin-section hidden">
+  <div class="page-head"><div><h2 class="title">Data Jamaah</h2><p>Kelola data dan kesiapan seluruh jamaah.</p></div><button class="btn btn-primary" onclick="alert('Form tambah jamaah akan disambungkan ke database.')">+ Tambah Jamaah</button></div>
+  <div class="card panel">
+    <div class="toolbar"><input class="input" placeholder="Cari nama jamaah..."><select class="input"><option>Semua Status</option><option>Lengkap</option><option>Proses</option></select></div>
+    <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>Nama</th><th>Group</th><th>Paspor</th><th>Vaksin</th><th>Visa</th><th>Status</th></tr></thead><tbody>
+      <tr><td><b>Ahmad Fauzi</b></td><td>A</td><td>✅</td><td>✅</td><td>✅</td><td><span class="badge green">Lengkap</span></td></tr>
+      <tr><td><b>Budi Santoso</b></td><td>A</td><td>✅</td><td>✅</td><td>⏳</td><td><span class="badge amber">Proses</span></td></tr>
+      <tr><td><b>Hasan Ali</b></td><td>B</td><td>❌</td><td>✅</td><td>❌</td><td><span class="badge red">Belum Lengkap</span></td></tr>
+    </tbody></table></div>
+  </div>
+</section>
+
+<section id="documents" class="admin-section hidden">
+  <div class="page-head"><div><h2 class="title">Dokumen Jamaah</h2><p>Pantau paspor, vaksin, visa, dan dokumen perjalanan.</p></div></div>
+  <div class="grid g4">
+    <div class="card stat"><small>Paspor Masuk</small><div class="value">116</div></div>
+    <div class="card stat"><small>Vaksin Lengkap</small><div class="value">111</div></div>
+    <div class="card stat"><small>Visa Selesai</small><div class="value">99</div></div>
+    <div class="card stat"><small>Butuh Revisi</small><div class="value" style="color:var(--red)">4</div></div>
+  </div>
+</section>
+
+<section id="tracking" class="admin-section hidden">
+  <div class="page-head"><div><h2 class="title">Live Location Jamaah</h2><p>Lokasi terakhir jamaah yang memberikan izin berbagi lokasi.</p></div><span class="badge blue">Safe Zone Aktif</span></div>
+  <div class="grid g3">
+    <div class="card panel" style="grid-column:span 2"><div id="adminMap" class="map"></div></div>
+    <div class="card panel"><h3>Cari Jamaah</h3><div class="list" style="margin-top:14px">
+      <button class="row" onclick="focusMarker('Ahmad Fauzi')" style="width:100%"><span><b>Ahmad Fauzi</b><br><small class="muted">Masjid Nabawi • 1 menit</small></span><span class="badge green">Online</span></button>
+      <button class="row" onclick="focusMarker('Budi Santoso')" style="width:100%"><span><b>Budi Santoso</b><br><small class="muted">Area hotel • 12 menit</small></span><span class="badge amber">Lama</span></button>
+      <button class="row" onclick="focusMarker('Hasan Ali')" style="width:100%"><span><b>Hasan Ali</b><br><small class="muted">Sekitar Masjid Nabawi</small></span><span class="badge red">SOS</span></button>
+    </div><div class="notice" style="margin-top:14px">Safe Zone contoh: radius ±1 km dari hotel/meeting point.</div></div>
+  </div>
+</section>
+
+<section id="attendance" class="admin-section hidden">
+  <div class="page-head"><div><h2 class="title">Absensi Meeting Point</h2><p>Cek jamaah yang sudah dan belum berkumpul.</p></div></div>
+  <div class="grid g4"><div class="card stat"><small>Hadir</small><div class="value" style="color:var(--green)">109</div></div><div class="card stat"><small>Belum Hadir</small><div class="value" style="color:var(--amber)">11</div></div><div class="card stat"><small>Terlambat</small><div class="value">3</div></div><div class="card stat"><small>Persentase</small><div class="value">91%</div></div></div>
+</section>
+
+<section id="busHotel" class="admin-section hidden">
+  <div class="page-head"><div><h2 class="title">Bus & Hotel</h2><p>Pembagian bus, kamar, dan check-in jamaah.</p></div></div>
+  <div class="grid g3">
+    <div class="card panel"><h3>Bus 01</h3><p class="muted">40 jamaah • 38 sudah naik</p><div class="progress"><span style="width:95%"></span></div></div>
+    <div class="card panel"><h3>Bus 02</h3><p class="muted">40 jamaah • 36 sudah naik</p><div class="progress"><span style="width:90%"></span></div></div>
+    <div class="card panel"><h3>Hotel Check-in</h3><p class="muted">116 dari 120 jamaah sudah masuk hotel.</p><div class="progress"><span style="width:96%"></span></div></div>
+  </div>
+</section>
+
+<section id="incidents" class="admin-section hidden">
+  <div class="page-head"><div><h2 class="title">Incident Report</h2><p>Catat dan pantau kejadian selama perjalanan.</p></div><button class="btn btn-danger" onclick="openIncident()">+ Buat Laporan</button></div>
+  <div class="card panel"><div class="list"><div class="row"><span><b>Hasan Ali — Terpisah dari rombongan</b><br><small class="muted">Status penanganan aktif</small></span><span class="badge red">Open</span></div><div class="row"><span><b>Budi Santoso — Barang tertinggal</b><br><small class="muted">Sudah ditemukan</small></span><span class="badge green">Closed</span></div></div></div>
+</section>
+
+<section id="broadcast" class="admin-section hidden">
+  <div class="page-head"><div><h2 class="title">Broadcast Jamaah</h2><p>Kirim pengumuman ke semua atau kelompok jamaah.</p></div></div>
+  <div class="card panel" style="max-width:720px"><select class="input"><option>Semua Jamaah</option><option>Group A</option><option>Bus 01</option><option>Belum Kumpul</option></select><textarea id="broadcastText" style="width:100%;min-height:160px;border:1px solid var(--border);border-radius:14px;padding:12px;margin-top:12px" placeholder="Tulis pengumuman..."></textarea><button class="btn btn-primary" style="margin-top:10px" onclick="sendBroadcast()">Kirim Broadcast</button><div id="broadcastStatus" class="muted" style="font-size:12px;margin-top:8px"></div></div>
+</section>
+</main>
+</div>
+</div>
+
+<div id="incidentModal" class="modal-bg hidden"><div class="card modal"><div style="display:flex;justify-content:space-between;align-items:center"><h3 class="title" style="margin:0">Buat Incident Report</h3><button class="btn btn-soft" onclick="closeIncident()">✕</button></div><textarea id="incidentText" placeholder="Tuliskan kronologi singkat..."></textarea><button class="btn btn-danger" style="width:100%;margin-top:10px" onclick="saveIncident()">Simpan Laporan</button></div></div>
+
+<script src="/assets/js/app.js"></script>
+<script>
+const s=session("admin"); if(s)document.getElementById("adminName").textContent="Login sebagai "+s.name;
+const places={
+ "Ahmad Fauzi":[24.4672,39.6111],
+ "Budi Santoso":[24.4690,39.6068],
+ "Hasan Ali":[24.4649,39.6085]
+};
+window.addEventListener("load",()=>{
+  window.adminMap=L.map("adminMap").setView([24.4672,39.6095],15);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(adminMap);
+  window.markers={};
+  Object.entries(places).forEach(([n,ll])=>{markers[n]=L.marker(ll).addTo(adminMap).bindPopup("<b>"+n+"</b><br>Lokasi demo")});
+  L.circle([24.4690,39.6068],{radius:1000,weight:1,fillOpacity:.04}).addTo(adminMap).bindPopup("Safe Zone");
+});
+function focusMarker(n){showSection("tracking",document.querySelectorAll(".nav button")[3]);setTimeout(()=>{const m=markers[n];adminMap.setView(m.getLatLng(),17);m.openPopup();adminMap.invalidateSize()},150)}
+</script>
+</body></html>
