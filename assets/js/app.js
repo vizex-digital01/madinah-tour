@@ -3,13 +3,9 @@ function togglePassword(){
   const p=document.getElementById("password");
   const b=document.getElementById("showPass");
   if(!p) return;
-
   const show=p.type==="password";
   p.type=show?"text":"password";
-
-  if(b){
-    b.textContent=show?"Sembunyikan":"Lihat";
-  }
+  if(b) b.textContent=show?"Sembunyikan":"Lihat";
 }
 
 async function loginSupabase(e){
@@ -19,51 +15,84 @@ async function loginSupabase(e){
   const password=document.getElementById("password").value;
   const status=document.getElementById("status");
 
-  if(status){
-    status.textContent="Memeriksa akun...";
-  }
+  if(status) status.textContent="Memeriksa akun...";
 
   try{
     const result=await mtSignIn(email,password);
-    const role=result?.profile?.role;
+    const role=(result?.profile?.role || "").trim();
 
-    console.log("Madinah Journey profile:", result.profile);
+    localStorage.setItem("mt_last_role", role);
 
-    if(
-      role==="super_admin" ||
-      role==="admin_operasional" ||
-      role==="tour_leader"
-    ){
-      window.location.replace("/admin/");
+    if(["super_admin","admin_operasional","tour_leader"].includes(role)){
+      window.location.href="/admin/";
       return;
     }
 
     if(role==="jamaah"){
-      window.location.replace("/jamaah/");
+      window.location.href="/jamaah/";
       return;
     }
 
     throw new Error("Role akun tidak dikenali: "+role);
-
   }catch(err){
     console.error(err);
-
-    if(status){
-      status.textContent=err?.message || "Login gagal.";
-    }
+    if(status) status.textContent=err?.message || "Login gagal.";
   }
 }
 
-async function session(role){
-  if(!window.mtRequireRole){
+async function requireAdminPage(){
+  try{
+    const data=await mtGetSessionProfile();
+    if(!data){
+      location.href="/";
+      return null;
+    }
+
+    const role=(data.profile?.role || "").trim();
+
+    if(!["super_admin","admin_operasional","tour_leader"].includes(role)){
+      if(role==="jamaah"){
+        location.href="/jamaah/";
+      }else{
+        location.href="/";
+      }
+      return null;
+    }
+
+    return data;
+  }catch(err){
+    console.error(err);
+    location.href="/";
     return null;
   }
+}
 
-  const roles = role==="admin"
-    ? ["super_admin","admin_operasional","tour_leader"]
-    : ["jamaah"];
+async function requireJamaahPage(){
+  try{
+    const data=await mtGetSessionProfile();
+    if(!data){
+      location.href="/";
+      return null;
+    }
 
-  return await mtRequireRole(roles);
+    const role=(data.profile?.role || "").trim();
+
+    if(role==="jamaah"){
+      return data;
+    }
+
+    if(["super_admin","admin_operasional","tour_leader"].includes(role)){
+      location.href="/admin/";
+      return null;
+    }
+
+    location.href="/";
+    return null;
+  }catch(err){
+    console.error(err);
+    location.href="/";
+    return null;
+  }
 }
 
 function logout(){
@@ -75,127 +104,24 @@ function logout(){
 }
 
 function toggleSidebar(){
-  const sidebar=document.getElementById("sidebar");
-  if(sidebar){
-    sidebar.classList.toggle("open");
-  }
+  const el=document.getElementById("sidebar");
+  if(el) el.classList.toggle("open");
 }
 
 function showSection(id,btn){
-  document.querySelectorAll(".admin-section").forEach(section=>{
-    section.classList.add("hidden");
-  });
-
+  document.querySelectorAll(".admin-section").forEach(x=>x.classList.add("hidden"));
   const target=document.getElementById(id);
-  if(target){
-    target.classList.remove("hidden");
-  }
+  if(target) target.classList.remove("hidden");
 
-  document.querySelectorAll(".nav button").forEach(button=>{
-    button.classList.remove("active");
-  });
-
-  if(btn){
-    btn.classList.add("active");
-  }
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+  if(btn) btn.classList.add("active");
 
   if(window.innerWidth<760){
     const sidebar=document.getElementById("sidebar");
-    if(sidebar){
-      sidebar.classList.remove("open");
-    }
+    if(sidebar) sidebar.classList.remove("open");
   }
 
   setTimeout(()=>{
-    if(id==="tracking" && window.adminMap){
-      window.adminMap.invalidateSize();
-    }
+    if(id==="tracking" && window.adminMap) window.adminMap.invalidateSize();
   },100);
-}
-
-async function myLocation(){
-  const st=document.getElementById("locationStatus");
-
-  if(!navigator.geolocation){
-    if(st){
-      st.textContent="Browser tidak mendukung GPS.";
-    }
-    return;
-  }
-
-  if(st){
-    st.textContent="Meminta izin lokasi...";
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    async pos=>{
-      try{
-        if(window.mtInsertLocation){
-          await mtInsertLocation({
-            latitude:pos.coords.latitude,
-            longitude:pos.coords.longitude,
-            accuracy:pos.coords.accuracy
-          });
-        }
-
-        if(st){
-          st.textContent=`Lokasi aktif & tersimpan • akurasi ±${Math.round(pos.coords.accuracy)} m`;
-        }
-
-        if(window.jamaahMap){
-          const ll=[pos.coords.latitude,pos.coords.longitude];
-          L.marker(ll).addTo(window.jamaahMap).bindPopup("Lokasi Anda").openPopup();
-          window.jamaahMap.setView(ll,16);
-        }
-      }catch(err){
-        console.error(err);
-
-        if(st){
-          st.textContent="Lokasi didapat tetapi gagal disimpan: "+err.message;
-        }
-      }
-    },
-    ()=>{
-      if(st){
-        st.textContent="Izin lokasi ditolak atau tidak tersedia.";
-      }
-    },
-    {
-      enableHighAccuracy:true,
-      timeout:10000,
-      maximumAge:15000
-    }
-  );
-}
-
-function sos(){
-  if(!confirm("Aktifkan SOS darurat?")){
-    return;
-  }
-
-  const send=async(latitude=null,longitude=null)=>{
-    try{
-      if(window.mtCreateSOS){
-        await mtCreateSOS({latitude,longitude});
-      }
-
-      alert("SOS aktif. Alert telah dikirim ke Command Center Admin.");
-    }catch(err){
-      console.error(err);
-      alert("SOS gagal dikirim: "+err.message);
-    }
-  };
-
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(
-      pos=>send(pos.coords.latitude,pos.coords.longitude),
-      ()=>send(),
-      {
-        enableHighAccuracy:true,
-        timeout:8000
-      }
-    );
-  }else{
-    send();
-  }
 }
