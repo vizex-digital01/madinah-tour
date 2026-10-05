@@ -20,6 +20,7 @@
     <button onclick="showSection('busHotel',this)">▣ Bus & Hotel</button>
     <button onclick="showSection('incidents',this)">⚠ Incident</button>
     <button onclick="showSection('broadcast',this)">◉ Broadcast</button>
+    <button onclick="showSection('settings',this);loadAdminSettings()">⚙ Pengaturan</button>
   </nav>
 </aside>
 
@@ -124,6 +125,211 @@
   <div class="page-head"><div><h2 class="title">Broadcast Jamaah</h2><p>Kirim pengumuman ke semua atau kelompok jamaah.</p></div></div>
   <div class="card panel" style="max-width:720px"><select class="input"><option>Semua Jamaah</option><option>Group A</option><option>Bus 01</option><option>Belum Kumpul</option></select><textarea id="broadcastText" style="width:100%;min-height:160px;border:1px solid var(--border);border-radius:14px;padding:12px;margin-top:12px" placeholder="Tulis pengumuman..."></textarea><button class="btn btn-primary" style="margin-top:10px" onclick="sendBroadcast()">Kirim Broadcast</button><div id="broadcastStatus" class="muted" style="font-size:12px;margin-top:8px"></div></div>
 </section>
+
+<section id="settings" class="admin-section hidden">
+  <div class="page-head">
+    <div>
+      <h2 class="title">Pengaturan Admin</h2>
+      <p>Kelola konfigurasi operasional Madinah Journey dari satu tempat.</p>
+    </div>
+    <button class="btn btn-primary" onclick="saveAdminSettings()">Simpan Pengaturan</button>
+  </div>
+
+  <div class="settings-grid">
+    <div class="card panel settings-card">
+      <div class="settings-head">
+        <div class="settings-icon">🏢</div>
+        <div>
+          <h3>Profil Travel</h3>
+          <p class="muted">Informasi yang tampil di portal jamaah.</p>
+        </div>
+      </div>
+
+      <div class="settings-form">
+        <label>Nama Travel
+          <input class="input" id="setTravelName" value="Madinah Tour">
+        </label>
+
+        <label>Nama Portal
+          <input class="input" id="setPortalName" value="Madinah Journey">
+        </label>
+
+        <label>Nomor WhatsApp Utama
+          <input class="input" id="setWhatsapp" value="0811-8802-1519">
+        </label>
+
+        <label>Alamat Kantor
+          <textarea class="settings-textarea" id="setAddress">Jl. Akses Marunda No.35B, Cilincing, Jakarta Utara</textarea>
+        </label>
+      </div>
+    </div>
+
+    <div class="card panel settings-card">
+      <div class="settings-head">
+        <div class="settings-icon">📍</div>
+        <div>
+          <h3>Live Location & Safe Zone</h3>
+          <p class="muted">Atur pemantauan lokasi jamaah saat perjalanan.</p>
+        </div>
+      </div>
+
+      <div class="settings-form">
+        <label>Radius Safe Zone
+          <div class="setting-inline">
+            <input class="input" id="setSafeRadius" type="number" min="100" step="100" value="1000">
+            <span>meter</span>
+          </div>
+        </label>
+
+        <label>Interval Update Lokasi
+          <select class="input" id="setLocationInterval">
+            <option value="30">30 detik</option>
+            <option value="60" selected>1 menit</option>
+            <option value="180">3 menit</option>
+            <option value="300">5 menit</option>
+          </select>
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Peringatan Keluar Safe Zone</b><small>Kirim alert ke admin saat jamaah berada di luar area.</small></span>
+          <input type="checkbox" id="setGeofenceAlert" checked>
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Riwayat Lokasi</b><small>Simpan histori lokasi untuk kebutuhan keselamatan.</small></span>
+          <input type="checkbox" id="setLocationHistory" checked>
+        </label>
+      </div>
+    </div>
+
+    <div class="card panel settings-card">
+      <div class="settings-head">
+        <div class="settings-icon">🆘</div>
+        <div>
+          <h3>Kontak Darurat</h3>
+          <p class="muted">Kontak yang ditampilkan saat jamaah membutuhkan bantuan.</p>
+        </div>
+      </div>
+
+      <div class="settings-form">
+        <label>Tour Leader
+          <input class="input" id="setTourLeader" value="Tour Leader Madinah Tour">
+        </label>
+
+        <label>No. Tour Leader
+          <input class="input" id="setTourLeaderPhone" placeholder="08xxxxxxxxxx">
+        </label>
+
+        <label>Emergency Admin
+          <input class="input" id="setEmergencyPhone" value="0811-8802-1519">
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Aktifkan Tombol SOS</b><small>Jamaah dapat mengirim permintaan bantuan dari dashboard.</small></span>
+          <input type="checkbox" id="setSosEnabled" checked>
+        </label>
+      </div>
+    </div>
+
+    <div class="card panel settings-card">
+      <div class="settings-head">
+        <div class="settings-icon">🔔</div>
+        <div>
+          <h3>Notifikasi & Broadcast</h3>
+          <p class="muted">Tentukan jenis pengingat untuk tim dan jamaah.</p>
+        </div>
+      </div>
+
+      <div class="settings-form">
+        <label class="toggle-row">
+          <span><b>SOS Alert</b><small>Notifikasi prioritas saat jamaah menekan SOS.</small></span>
+          <input type="checkbox" id="setNotifySos" checked>
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Jamaah Belum Kumpul</b><small>Peringatan saat absensi belum lengkap.</small></span>
+          <input type="checkbox" id="setNotifyAttendance" checked>
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Dokumen Belum Lengkap</b><small>Pengingat paspor, vaksin, dan visa.</small></span>
+          <input type="checkbox" id="setNotifyDocuments" checked>
+        </label>
+
+        <label>Default Broadcast
+          <textarea class="settings-textarea" id="setDefaultBroadcast">Assalamualaikum. Mohon seluruh jamaah memperhatikan informasi terbaru dari tim Madinah Tour.</textarea>
+        </label>
+      </div>
+    </div>
+
+    <div class="card panel settings-card">
+      <div class="settings-head">
+        <div class="settings-icon">🕋</div>
+        <div>
+          <h3>Program Aktif</h3>
+          <p class="muted">Program yang menjadi default di Command Center.</p>
+        </div>
+      </div>
+
+      <div class="settings-form">
+        <label>Nama Program
+          <input class="input" id="setProgramName" value="Umroh 9 Hari">
+        </label>
+
+        <label>Tanggal Keberangkatan
+          <input class="input" id="setDepartureDate" type="date" value="2026-11-02">
+        </label>
+
+        <label>Meeting Point
+          <input class="input" id="setMeetingPoint" value="Bandara Soekarno-Hatta">
+        </label>
+
+        <label>Jumlah Jamaah
+          <input class="input" id="setTotalJamaah" type="number" value="120">
+        </label>
+      </div>
+    </div>
+
+    <div class="card panel settings-card">
+      <div class="settings-head">
+        <div class="settings-icon">🔐</div>
+        <div>
+          <h3>Keamanan Admin</h3>
+          <p class="muted">Pengaturan akses dashboard admin.</p>
+        </div>
+      </div>
+
+      <div class="settings-form">
+        <label class="toggle-row">
+          <span><b>Auto Logout</b><small>Keluar otomatis saat dashboard lama tidak digunakan.</small></span>
+          <input type="checkbox" id="setAutoLogout" checked>
+        </label>
+
+        <label>Auto Logout Setelah
+          <select class="input" id="setAutoLogoutMinutes">
+            <option value="15">15 menit</option>
+            <option value="30" selected>30 menit</option>
+            <option value="60">1 jam</option>
+            <option value="120">2 jam</option>
+          </select>
+        </label>
+
+        <label class="toggle-row">
+          <span><b>Konfirmasi Aksi Darurat</b><small>Minta konfirmasi sebelum menutup SOS/incident.</small></span>
+          <input type="checkbox" id="setEmergencyConfirm" checked>
+        </label>
+
+        <div class="security-note">
+          <b>Versi demo Vercel</b><br>
+          Pengaturan saat ini disimpan di browser admin. Saat backend/database sudah dipasang, pengaturan dapat disimpan untuk semua perangkat admin.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsSaved" class="settings-toast hidden">✓ Pengaturan berhasil disimpan</div>
+</section>
+
 </main>
 </div>
 </div>
