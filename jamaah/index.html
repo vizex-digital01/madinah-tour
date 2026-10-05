@@ -39,11 +39,38 @@
     <div class="card panel"><h3>Kartu Jamaah</h3><p><b>MT-2026-00125</b></p><p class="muted">QR emergency card siap digunakan.</p></div>
   </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/js/supabase-config.js"></script>
+<script src="/assets/js/supabase-app.js"></script>
 <script src="/assets/js/app.js"></script>
 <script>
-const s=session("jamaah"); if(s)document.getElementById("jamaahName").textContent=s.name;
-window.jamaahMap=L.map("jamaahMap").setView([24.4672,39.6111],15);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(jamaahMap);
-L.marker([24.4672,39.6111]).addTo(jamaahMap).bindPopup("Area Masjid Nabawi");
+(async()=>{
+  const auth=await requireJamaahPage();
+  if(!auth) return;
+
+  const name=auth.profile?.full_name || "Jamaah";
+  const nameEl=document.getElementById("jamaahName");
+  if(nameEl) nameEl.textContent=name;
+
+  try{
+    const j=await mtLoadJamaah();
+    if(j && nameEl){
+      nameEl.textContent=j.full_name || name;
+    }
+  }catch(err){
+    console.error("Load jamaah:",err);
+  }
+
+  window.jamaahMap=L.map("jamaahMap").setView([24.4672,39.6111],15);
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {maxZoom:19,attribution:"&copy; OpenStreetMap"}
+  ).addTo(window.jamaahMap);
+
+  L.marker([24.4672,39.6111])
+    .addTo(window.jamaahMap)
+    .bindPopup("Area Masjid Nabawi");
+})();
 </script>
 </body></html>
