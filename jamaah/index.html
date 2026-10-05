@@ -1,1 +1,49 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard Jamaah</title></head><body style="font-family:Arial;padding:40px"><h1>Dashboard Jamaah</h1><p>Login jamaah berhasil.</p><a href="/">Kembali</a></body></html>
+<!doctype html>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073564">
+<title>Dashboard Jamaah | Madinah Journey</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head><body>
+<header class="jamaah-top"><div class="container inner"><img class="jamaah-logo" src="/assets/img/madinah-tour-logo.jpeg" alt="Madinah Tour"><button class="btn btn-soft" onclick="logout()">Keluar</button></div></header>
+<main class="container" style="padding-top:24px;padding-bottom:60px">
+  <section class="hero">
+    <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div><div style="color:#bfdbfe">Assalamualaikum,</div><h1 id="jamaahName" style="font-size:34px;margin:4px 0">Jamaah</h1><p style="color:#dbeafe">Persiapan perjalanan menuju Baitullah.</p></div>
+      <div style="padding:14px 20px;border-radius:16px;background:rgba(255,255,255,.11);text-align:center"><div style="font-size:32px;font-weight:900">28</div><small>Hari Lagi</small></div>
+    </div>
+    <div style="margin-top:22px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px"><span>Progress Persiapan</span><b>78%</b></div><div class="progress"><span style="width:78%"></span></div></div>
+  </section>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="card stat"><small>Data Jamaah</small><div class="value" style="color:var(--green)">Lengkap</div></div>
+    <div class="card stat"><small>Paspor</small><div class="value" style="color:var(--green)">OK</div></div>
+    <div class="card stat"><small>Visa</small><div class="value" style="color:var(--amber)">Proses</div></div>
+    <div class="card stat"><small>Manasik</small><div class="value" style="color:var(--blue)">70%</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card panel"><h3>Perjalanan Saya</h3><div class="list" style="margin-top:14px">
+      <div class="row"><span>Data Jamaah</span><span class="badge green">Selesai</span></div>
+      <div class="row"><span>Dokumen & Vaksin</span><span class="badge green">Selesai</span></div>
+      <div class="row"><span>Visa Umroh</span><span class="badge amber">Proses</span></div>
+      <div class="row"><span>Manasik</span><span class="badge blue">Berjalan</span></div>
+      <div class="row"><span>Perlengkapan</span><span class="badge">Belum</span></div>
+    </div></div>
+    <div class="card panel"><h3>Keselamatan Jamaah</h3><p class="muted">Aktifkan lokasi agar tim bisa membantu jika Anda terpisah dari rombongan.</p><button class="btn btn-primary" style="width:100%" onclick="myLocation()">Aktifkan Lokasi</button><button class="btn btn-danger" style="width:100%;margin-top:10px" onclick="sos()">SOS Darurat</button><div id="locationStatus" class="notice" style="margin-top:12px">Lokasi belum diaktifkan.</div></div>
+  </div>
+  <div class="card panel" style="margin-top:16px"><h3>Peta Lokasi</h3><div id="jamaahMap" class="map" style="margin-top:12px"></div></div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="card panel"><h3>Keberangkatan</h3><p><b>02 November 2026</b></p><p class="muted">Jakarta → Madinah</p></div>
+    <div class="card panel"><h3>Bus & Kamar</h3><p><b>Bus 02 • Room 402</b></p><p class="muted">Group A</p></div>
+    <div class="card panel"><h3>Kartu Jamaah</h3><p><b>MT-2026-00125</b></p><p class="muted">QR emergency card siap digunakan.</p></div>
+  </div>
+</main>
+<script src="/assets/js/app.js"></script>
+<script>
+const s=session("jamaah"); if(s)document.getElementById("jamaahName").textContent=s.name;
+window.jamaahMap=L.map("jamaahMap").setView([24.4672,39.6111],15);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(jamaahMap);
+L.marker([24.4672,39.6111]).addTo(jamaahMap).bindPopup("Area Masjid Nabawi");
+</script>
+</body></html>
