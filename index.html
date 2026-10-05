@@ -1,1 +1,78 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Madinah Journey</title><link rel="stylesheet" href="/assets/css/style.css"></head><body><div class="login"><section class="login-left"><div><div style="font-weight:800;letter-spacing:.08em">MADINAH JOURNEY</div><h1>Semua persiapan Umroh dalam satu tempat.</h1><p style="font-size:18px;color:#dbeafe;max-width:620px">Portal jamaah Madinah Tour untuk dokumen, manasik, itinerary, lokasi, dan bantuan darurat.</p></div><div style="color:#bfdbfe;font-size:14px">MadinahTour.com — Travel Haji dan Umroh</div></section><section class="login-right"><div class="card login-card"><img src="/assets/img/madinah-tour-logo.jpeg" alt="Madinah Tour"><h2 style="margin:0;color:#082f63;font-size:28px">Masuk ke Portal</h2><p class="muted">Versi demo Vercel.</p><form class="form" onsubmit="loginDemo(event)"><div><label>Email / No. WhatsApp / Username</label><input id="login" placeholder="Masukkan akun"></div><div><label>Password / PIN</label><input id="password" type="password" placeholder="Masukkan password"></div><button class="btn btn-primary" type="submit">Masuk</button></form><div id="loginStatus" class="notice" style="margin-top:14px">Demo Admin: <b>admin</b> / <b>admin123</b><br>Demo Jamaah: <b>jamaah</b> / <b>123456</b></div></div></section></div><script src="/assets/js/app.js"></script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#062b59">
+  <title>Madinah Journey | Portal Jamaah</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-brand">
+      <div class="brand-chip">MADINAH JOURNEY • MADINAH TOUR</div>
+
+      <div class="brand-copy">
+        <h1>Perjalanan Umroh lebih tenang, terarah, dan terpantau.</h1>
+        <p>
+          Satu portal untuk persiapan dokumen, manasik, itinerary,
+          informasi keberangkatan, hingga bantuan jamaah selama di Tanah Suci.
+        </p>
+
+        <div class="brand-points">
+          <div class="point">✓ Persiapan jamaah</div>
+          <div class="point">✓ Informasi perjalanan</div>
+          <div class="point">✓ Bantuan & keselamatan</div>
+        </div>
+      </div>
+
+      <div style="position:relative;z-index:2;color:#bfdbfe;font-size:13px">
+        MadinahTour.com — Travel Haji dan Umroh
+      </div>
+    </section>
+
+    <section class="auth-panel">
+      <div class="login-card">
+        <div class="logo-wrap">
+          <img src="/assets/img/madinah-tour-logo.jpeg" alt="Madinah Tour">
+        </div>
+
+        <h2>Masuk ke Portal</h2>
+        <p class="sub">Silakan masuk menggunakan akun jamaah atau akun admin.</p>
+
+        <form onsubmit="loginDemo(event)">
+          <div class="form-row">
+            <label for="login">Email / No. WhatsApp / Username</label>
+            <input class="input" id="login" autocomplete="username" placeholder="Masukkan akun">
+          </div>
+
+          <div class="form-row">
+            <label for="password">Password / PIN</label>
+            <div class="password-wrap">
+              <input class="input" id="password" type="password" autocomplete="current-password" placeholder="Masukkan password">
+              <button id="showPass" class="show-pass" type="button" onclick="togglePassword()">Lihat</button>
+            </div>
+          </div>
+
+          <div class="helper">
+            <span>Akses khusus jamaah & tim Madinah Tour</span>
+          </div>
+
+          <button class="login-btn" type="submit">Masuk ke Dashboard</button>
+          <div class="status" id="status"></div>
+        </form>
+
+        <div class="demo-box">
+          <b>Akun pengujian</b><br>
+          Admin: <b>admin</b> / <b>admin123</b><br>
+          Jamaah: <b>jamaah</b> / <b>123456</b>
+        </div>
+
+        <div class="footer">© 2026 Madinah Tour • Portal Jamaah</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>
