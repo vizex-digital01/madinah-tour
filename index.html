@@ -1,49 +1,41 @@
 <!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Madinah Journey | Portal Jamaah</title>
-  <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
+<html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#073564">
+<title>Madinah Journey | Portal Jamaah</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+</head><body>
 <main class="auth-shell">
   <section class="auth-brand">
     <div class="brand-chip">MADINAH JOURNEY • MADINAH TOUR</div>
     <div class="brand-copy">
       <h1>Perjalanan Umroh lebih tenang dan terpantau.</h1>
-      <p>Satu portal untuk persiapan jamaah, dokumen, manasik, itinerary, lokasi, dan bantuan selama perjalanan.</p>
+      <p>Satu portal untuk persiapan jamaah, dokumen, manasik, itinerary, lokasi, dan bantuan selama perjalanan di Tanah Suci.</p>
+      <div class="brand-points">
+        <span class="brand-point">✓ Persiapan Jamaah</span>
+        <span class="brand-point">✓ Live Location</span>
+        <span class="brand-point">✓ SOS & Bantuan</span>
+      </div>
     </div>
+    <div style="position:relative;z-index:2;color:#bfdbfe;font-size:13px">MadinahTour.com — Travel Haji dan Umroh</div>
   </section>
-
   <section class="auth-panel">
     <div class="card login-card">
       <img class="login-logo" src="/assets/img/madinah-tour-logo.jpeg" alt="Madinah Tour">
       <h2 class="title">Masuk ke Portal</h2>
-      <p class="muted">Gunakan akun Supabase yang sudah terdaftar.</p>
-
+      <p class="muted">Gunakan akun yang sudah terdaftar di Madinah Journey.</p>
       <form onsubmit="loginSupabase(event)">
-        <div class="field">
-          <label>Email</label>
-          <input class="input" id="login" type="email" placeholder="nama@email.com" required>
-        </div>
-        <div class="field">
-          <label>Password</label>
-          <div class="pass-wrap">
-            <input class="input" id="password" type="password" placeholder="Masukkan password" required>
-            <button id="showPass" class="show-pass" type="button" onclick="togglePassword()">Lihat</button>
-          </div>
-        </div>
+        <div class="field"><label>Email / Nomor HP internasional</label><input class="input" id="login" placeholder="nama@email.com atau +62812..." autocomplete="username"></div>
+        <div class="field"><label>Password / PIN</label><div class="pass-wrap"><input class="input" id="password" type="password" placeholder="Masukkan password"><button id="showPass" class="show-pass" type="button" onclick="togglePassword()">Lihat</button></div></div>
         <button class="btn btn-primary login-btn" type="submit">Masuk ke Dashboard</button>
         <div id="status" class="status"></div>
       </form>
+      <div class="demo-box">Akun dibuat dan dikelola oleh admin Madinah Tour.</div>
     </div>
   </section>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/assets/js/supabase-config.js"></script>
 <script src="/assets/js/supabase-app.js"></script>
 <script src="/assets/js/app.js"></script>
-</body>
-</html>
+</body></html>
